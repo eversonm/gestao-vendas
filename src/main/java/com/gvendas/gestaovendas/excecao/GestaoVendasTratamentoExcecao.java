@@ -1,6 +1,7 @@
 package com.gvendas.gestaovendas.excecao;
 
 import com.gvendas.gestaovendas.servico.RegraNegocioException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,7 @@ public class GestaoVendasTratamentoExcecao extends ResponseEntityExceptionHandle
         });
         return erros;
     }
+
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request){
         String msgUsuario = "Recurso não encontrado.";
@@ -51,6 +53,7 @@ public class GestaoVendasTratamentoExcecao extends ResponseEntityExceptionHandle
 
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<Erro> erros = gerarListaDeErros(ex.getBindingResult());
@@ -62,6 +65,15 @@ public class GestaoVendasTratamentoExcecao extends ResponseEntityExceptionHandle
     public ResponseEntity<Object> handleRegraNegocioException(RegraNegocioException ex, WebRequest request) {
         String msgUsuario = ex.getMessage();
         String msgDesenvolvedor = ex.getMessage();
+        List<Erro> erros = Arrays.asList(new Erro(msgUsuario, msgDesenvolvedor));
+
+        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request){
+        String msgUsuario = "Recurso não encontrado.";
+        String msgDesenvolvedor = ex.toString();
         List<Erro> erros = Arrays.asList(new Erro(msgUsuario, msgDesenvolvedor));
 
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
