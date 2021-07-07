@@ -25,6 +25,7 @@ public class CategoriaServico {
     }
 
     public Categoria salvar(Categoria categoria){
+        validarCategoriaDuplicada(categoria);
         return categoriaRepositorio.save(categoria);
     }
 
@@ -38,8 +39,20 @@ public class CategoriaServico {
 
     public Categoria atualizar(Long codigo, Categoria categoria) {
         Categoria categoriaSalvar = validarCategoriaExiste(codigo);
+        validarCategoriaDuplicada(categoria);
         BeanUtils.copyProperties(categoria, categoriaSalvar, "codigo");
         return  categoriaRepositorio.save(categoriaSalvar);
     }
 
+    public void apagar(Long codigo) {
+        categoriaRepositorio.deleteById(codigo);
+    }
+
+    private void validarCategoriaDuplicada(Categoria categoria) {
+        Categoria categoriaEncontrada  = categoriaRepositorio.findByNome(categoria.getNome());
+        if (categoriaEncontrada != null && categoriaEncontrada.getCodigo()!= categoria.getCodigo()){
+            throw new RegraNegocioException(
+                    String.format("A categoria %s já está cadastrada.", categoria.getNome().toUpperCase()));
+        }
+    }
 }

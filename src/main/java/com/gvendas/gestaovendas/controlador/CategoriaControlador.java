@@ -46,4 +46,11 @@ public class CategoriaControlador {
     public ResponseEntity<Categoria> atualizar(@PathVariable Long codigo, @Valid @RequestBody Categoria categoria){
         return ResponseEntity.ok(categoriaServico.atualizar(codigo, categoria));
     }
+
+    @ApiOperation(value = "Apagar")
+    @DeleteMapping("/{codigo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void apagar(@PathVariable Long codigo) {
+        categoriaServico.apagar(codigo);
+    }
 }
