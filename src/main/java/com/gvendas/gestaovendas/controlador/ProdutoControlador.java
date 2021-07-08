@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,9 +37,23 @@ public class ProdutoControlador {
     }
 
     @ApiOperation(value = "Adicionar um produto", nickname = "salvarProduto")
-    @PostMapping
-    public ResponseEntity<Produto> salvar(@RequestBody Produto produto){
-        Produto produtoSalvar = produtoServico.salvar(produto);
+    @PostMapping("/{codigoCategoria}")
+    public ResponseEntity<Produto> salvar(@PathVariable Long codigoCategoria, @Valid @RequestBody Produto produto){
+        Produto produtoSalvar = produtoServico.salvar(codigoCategoria, produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoSalvar);
+    }
+
+    @ApiOperation(value = "Atualizar um produto", nickname = "atualizarProduto")
+    @PutMapping("/{codigoProduto}")
+    public ResponseEntity<Produto> atualizar(@PathVariable Long codigoCategoria, @PathVariable Long codigoProduto, @Valid @RequestBody Produto produto){
+        Produto produtoAtualizar = produtoServico.atualizar(codigoCategoria, codigoProduto, produto);
+        return ResponseEntity.ok(produtoAtualizar);
+    }
+
+    @ApiOperation(value = "Apagar um produto", nickname = "apagarProduto")
+    @DeleteMapping("/{codigoProduto}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void apagar(@PathVariable Long codigoCategoria, @PathVariable Long codigoProduto){
+        produtoServico.apagar(codigoCategoria, codigoProduto);
     }
 }
