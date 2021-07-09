@@ -1,7 +1,7 @@
 package com.gvendas.gestaovendas.controlador;
 
-import com.gvendas.gestaovendas.dto.CategoriaRequestDTO;
-import com.gvendas.gestaovendas.dto.CategoriaResponseDTO;
+import com.gvendas.gestaovendas.dto.categoria.CategoriaRequestDTO;
+import com.gvendas.gestaovendas.dto.categoria.CategoriaResponseDTO;
 import com.gvendas.gestaovendas.entidades.Categoria;
 import com.gvendas.gestaovendas.servico.CategoriaServico;
 import io.swagger.annotations.Api;
@@ -50,8 +50,9 @@ public class CategoriaControlador {
 
     @ApiOperation(value = "Atualizar", nickname = "atualizarCategoria")
     @PutMapping("/{codigo}")
-    public ResponseEntity<Categoria> atualizar(@PathVariable Long codigo, @Valid @RequestBody CategoriaRequestDTO categoriaDto){
-        return ResponseEntity.ok(categoriaServico.atualizar(codigo, categoriaDto.converterParaEntidade(codigo)));
+    public ResponseEntity<CategoriaResponseDTO> atualizar(@PathVariable Long codigo, @Valid @RequestBody CategoriaRequestDTO categoriaDto){
+        Categoria atualizarCategoria = categoriaServico.atualizar(codigo, categoriaDto.converterParaEntidade(codigo));
+        return ResponseEntity.ok(CategoriaResponseDTO.converterParaCategoriaDTO(atualizarCategoria));
     }
 
     @ApiOperation(value = "Apagar", nickname = "apagarCategoria")
